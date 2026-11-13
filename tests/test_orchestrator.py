@@ -107,3 +107,48 @@ def test_full_tool_registry_loaded_on_import():
     )
     out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
     assert out.stdout.strip().splitlines()[-1] == "26", out.stderr
+
+
+def test_correlate_system_context_full_flow():
+    from agent.orchestrator import correlate_system_context
+    from agent.schemas import ToolResult
+
+    # Case 1: insufficient evidence (< 2 domains) -> returns None
+    ev1 = ToolResult(
+        evidence_id="ev-1",
+        tool="mlflow_find_best_run",
+        source="mlflow",
+        status="ok",
+        data={"best_run": {"run_id": "r1"}},
+    )
+    assert correlate_system_context([ev1]) is None
+
+    # Case 2: two domains with match
+    ev2 = ToolResult(
+        evidence_id="ev-2",
+        tool="k8s_get_deployed_version",
+        source="kubernetes",
+        status="ok",
+        data={"configmap": {"MODEL_RUN_ID": "r1", "DATASET_VERSION": "data-v2.0"}},
+    )
+    ev3 = ToolResult(
+        evidence_id="ev-3",
+        tool="dvc_get_dataset_version",
+        source="dvc",
+        status="ok",
+        data={"git_tag": "data-v2.0"},
+    )
+    ev4 = ToolResult(
+        evidence_id="ev-4",
+        tool="airflow_get_dag_runs",
+        source="airflow",
+        status="ok",
+        data={"runs": [{"state": "success"}]},
+    )
+
+    corr = correlate_system_context([ev1, ev2, ev3, ev4])
+    assert corr is not None
+    assert corr.status == "ok"
+    assert corr.data["is_deployed_best"] is True
+    assert corr.data["dataset_match"] is True
+    assert corr.data["latest_dag_state"] == "success"

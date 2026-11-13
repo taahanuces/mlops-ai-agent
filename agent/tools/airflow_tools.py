@@ -312,7 +312,12 @@ def airflow_get_task_logs(
                 error=f"Airflow returned status {status_code}: {body}",
             )
 
-        raw = body if isinstance(body, str) else body.get("content", str(body))
+        if isinstance(body, list):
+            raw = body
+        elif isinstance(body, dict):
+            raw = body.get("content", str(body))
+        else:
+            raw = str(body)
         if isinstance(raw, list):
             # Airflow 3 returns structured log entries (dicts with timestamp/event/level) or strings
             parts = []

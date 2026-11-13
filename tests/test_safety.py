@@ -226,3 +226,47 @@ def test_multi_tool_mandatory_scenario(fake_llm):
         assert "dvc_get_dataset_version" in called_tools
         assert "k8s_get_deployed_version" in called_tools
         assert "airflow_get_dag_runs" in called_tools
+
+
+def test_confirmation_store_get_action_and_list_pending():
+    store = ConfirmationStore(ttl_seconds=1)
+    cid = store.store_action("t", {}, "desc", "agent", lambda: 1)
+    act = store.get_action(cid)
+    assert act is not None
+    assert act.confirmation_id == cid
+
+    pending = store.list_pending()
+    assert len(pending) == 1
+
+    time.sleep(1.1)
+    assert store.get_action(cid) is None
+    assert len(store.list_pending()) == 0
+
+
+def test_confirmation_store_callback_exception():
+    store = ConfirmationStore(ttl_seconds=10)
+
+    def bad_callback():
+        raise ValueError("failing action")
+
+    cid = store.store_action("t", {}, "desc", "agent", bad_callback)
+    act, res, err = store.execute_and_consume(cid)
+    assert res is None
+    assert "Execution failed: failing action" in err
+
+
+def test_permission_checks():
+    from agent.permissions import (
+        check_airflow_dag_id,
+        check_dvc_command_allowed,
+        check_kubernetes_namespace,
+    )
+
+    assert check_kubernetes_namespace("mlops-agent") is True
+    assert check_kubernetes_namespace("kube-system") is False
+
+    assert check_airflow_dag_id("training_pipeline") is True
+    assert check_airflow_dag_id("non_existent_dag") is False
+
+    assert check_dvc_command_allowed([]) is False
+    assert check_dvc_command_allowed("not a list") is False  # type: ignore
