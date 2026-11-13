@@ -93,3 +93,17 @@ def test_tool_selection_pod_logs(fake_llm):
         assert len(evidence) == 1
         assert evidence[0].tool == "k8s_get_pod_logs"
         assert ans.known_facts[0].statement == "Pod logs inspected"
+
+
+def test_full_tool_registry_loaded_on_import():
+    """Regression: the live API must expose all tools without manual module imports."""
+    import subprocess
+    import sys
+
+    code = (
+        "import agent.orchestrator as o; "
+        "from agent.tools.registry import TOOL_REGISTRY; "
+        "print(len(TOOL_REGISTRY))"
+    )
+    out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+    assert out.stdout.strip().splitlines()[-1] == "26", out.stderr
