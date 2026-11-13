@@ -2,7 +2,7 @@
 
 An evidence-based conversational AI agent for autonomous MLOps platform operations across **DVC**, **MLflow**, **Apache Airflow 3**, and **Kubernetes**.
 
-Built for **MLOps & Production AI Engineering (Fall 2026)**.
+Built for **MLOps Assignment 3**.
 
 ---
 
