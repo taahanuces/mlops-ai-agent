@@ -12,6 +12,6 @@ This checklist defines the evidence artifacts that require manual capture or ext
 | **Continuous Integration** | GitHub Actions | Screenshot of passing GitHub Actions CI workflow (linting, testing, coverage) on pull request | [ ] Pending | `screenshots/github_actions_ci.png` |
 
 ## Human Prerequisites Checklist
-- [ ] `ANTHROPIC_API_KEY` configured in `.env` (for live Anthropic API calls during demo; tests use mocked LLM)
+- [ ] `GEMINI_API_KEY` configured in `.env` (for live Gemini API calls during demo; tests use mocked LLM)
 - [ ] Docker Desktop running with 6–8 GB allocated memory
 - [ ] GitHub repository remote connected for PR & Actions validation

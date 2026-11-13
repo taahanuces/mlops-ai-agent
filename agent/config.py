@@ -13,8 +13,9 @@ load_dotenv()
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # LLM Configuration
-ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
-LLM_MODEL: str = os.getenv("LLM_MODEL", "claude-3-5-sonnet-20241022")
+GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY", "")
+LLM_TIMEOUT_S: float = float(os.getenv("LLM_TIMEOUT_S", "30"))
+LLM_MODEL: str = os.getenv("LLM_MODEL", "gemini-3.1-flash-lite")
 
 # MLflow
 MLFLOW_TRACKING_URI: str = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5001")

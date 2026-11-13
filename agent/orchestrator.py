@@ -211,7 +211,17 @@ class Orchestrator:
                 {
                     "role": "assistant",
                     "content": [
-                        {"type": "tool_use", "id": tc.id, "name": tc.name, "input": tc.input}
+                        {
+                            "type": "tool_use",
+                            "id": tc.id,
+                            "name": tc.name,
+                            "input": tc.input,
+                            **(
+                                {"thought_signature": tc.thought_signature}
+                                if tc.thought_signature
+                                else {}
+                            ),
+                        }
                         for tc in response.tool_calls
                     ],
                 }

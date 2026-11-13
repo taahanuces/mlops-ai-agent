@@ -22,7 +22,7 @@ Crucially, the agent operates under strict **evidence-based grounding**: the LLM
 ### 2.1 Multi-Layer System Architecture
 The system follows a decoupled four-layer architecture:
 1. **Interface Layer:** FastAPI REST endpoints (`POST /chat`, `POST /confirm/{id}`, `GET /health`) and an interactive terminal CLI (`agent/cli.py`).
-2. **Orchestration Layer:** Anthropic tool use multi-turn execution loop (up to 8 turns), context correlation engine, and code-level Evidence Guard.
+2. **Orchestration Layer:** Gemini function-calling multi-turn execution loop (up to 8 turns), context correlation engine, and code-level Evidence Guard.
 3. **Security & Permission Layer:** In-memory confirmation store with 5-minute TTL, namespace validation (`mlops-agent`), DVC command allow-list, and structured JSON logging with automated secrets redaction.
 4. **Platform Integration Layer:** Direct clients for DVC (subprocess argv), MLflow (`MlflowClient`), Airflow 3 (`httpx` + JWT), and Kubernetes (`kubernetes-client`).
 

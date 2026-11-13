@@ -12,7 +12,7 @@ from agent.tools.registry import reset_evidence_counter
 @pytest.fixture(autouse=True)
 def clean_environment(monkeypatch):
     """Set default test environment variables."""
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-000")
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key-000")
     monkeypatch.setenv("LLM_MODEL", "test-model")
     monkeypatch.setenv("K8S_NAMESPACE", "mlops-agent")
     monkeypatch.setenv("APPROVED_NAMESPACES", "mlops-agent")

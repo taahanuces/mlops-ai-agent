@@ -9,7 +9,7 @@ from typing import Any
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from agent.llm import AnthropicClient
+from agent.llm import GeminiClient
 from agent.logging_utils import (
     get_current_request_id,
     log_tool_call,
@@ -50,8 +50,8 @@ async def request_context_middleware(request: Request, call_next):
     return response
 
 
-# Default orchestrator with Anthropic client
-_orchestrator = Orchestrator(llm_client=AnthropicClient())
+# Default orchestrator with Gemini client
+_orchestrator = Orchestrator(llm_client=GeminiClient())
 
 
 def get_orchestrator() -> Orchestrator:

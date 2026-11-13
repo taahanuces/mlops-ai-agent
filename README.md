@@ -15,7 +15,7 @@ User (HTTP / CLI)
 FastAPI Agent Service (:9000)
       │
       ▼
-Agent Orchestrator (Anthropic Tool Use / FakeLLM for CI)
+Agent Orchestrator (Gemini Function Calling / FakeLLM for CI)
       │
       ├── Permission Gate (Read immediate / Write confirmed / Forbidden blocked)
       ├── Evidence Guard (No uncited facts, automatic failure logging)
@@ -57,7 +57,7 @@ Copy the example configuration and adjust values as needed:
 ```bash
 cp .env.example .env
 ```
-Fill in your `ANTHROPIC_API_KEY` in `.env` (note: test suites and CI use mocked LLM clients and run without an API key).
+Fill in your `GEMINI_API_KEY (Google AI Studio free tier)` in `.env` (note: test suites and CI use mocked LLM clients and run without an API key).
 
 ### 3.3 Starting Underlying Services
 1. **MLflow Tracking Server:**

@@ -15,7 +15,7 @@ This document details the architectural design, security mechanisms, provenance 
                                          v
 +----------------------------------------------------------------------------------+
 |                           MLOps AI Agent Orchestrator                            |
-|  - Anthropic Tool Use Loop (Max 8 turns)                                         |
+|  - Gemini Function-Calling Loop (Max 8 turns)                                         |
 |  - In-Memory Confirmation Store (5-min TTL, Single-Use)                          |
 |  - Context Correlation Engine                                                    |
 |  - Evidence Guard (Grounding & Hallucination Prevention)                         |

@@ -18,9 +18,9 @@ SECRET_KEY_PATTERN = re.compile(
     r"(?i)(token|password|secret|api[_-]?key|authorization|bearer|cookie)"
 )
 
-# Sensitive value patterns (JWTs, Anthropic sk- keys, generic secrets)
+# Sensitive value patterns (JWTs, sk- keys, Google AIza/AQ. API keys, generic secrets)
 SECRET_VALUE_PATTERN = re.compile(
-    r"(sk-[a-zA-Z0-9\-_]{20,}|eyJ[a-zA-Z0-9_\-]{10,}\.[a-zA-Z0-9_\-]{10,}\.[a-zA-Z0-9_\-]+)"
+    r"(sk-[a-zA-Z0-9\-_]{20,}|AIza[0-9A-Za-z\-_]{30,}|AQ\.[0-9A-Za-z\-_.]{30,}|eyJ[a-zA-Z0-9_\-]{10,}\.[a-zA-Z0-9_\-]{10,}\.[a-zA-Z0-9_\-]+)"
 )
 
 
