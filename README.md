@@ -45,8 +45,8 @@ Agent Orchestrator (Gemini Function Calling / FakeLLM for CI)
 ### 3.1 Installation & Virtual Environment
 ```bash
 # Clone and enter repo
-git clone <repo-url>
-cd mlop_a3
+git clone https://github.com/taahanuces/mlops-ai-agent.git
+cd mlops-ai-agent
 
 # Run automated setup script
 make setup
