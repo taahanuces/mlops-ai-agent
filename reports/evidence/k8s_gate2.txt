@@ -1,0 +1,13 @@
+=== kubectl get pods ===
+NAME                               READY   STATUS    RESTARTS   AGE   IP           NODE                  NOMINATED NODE   READINESS GATES
+mlops-inference-85b4b7f946-7ggz8   1/1     Running   0          28s   10.244.0.6   mlops-control-plane   <none>           <none>
+mlops-inference-85b4b7f946-8zghd   1/1     Running   0          28s   10.244.0.5   mlops-control-plane   <none>           <none>
+
+=== GET /health ===
+{"status":"ok","service":"inference-api"}
+=== GET /ready ===
+{"status": "ready"}
+=== GET /version ===
+{"app_version":"1.0.0","model_run_id":"8ddbb08febcc4e62b4e7e85762681a45","dataset_version":"data-v2.0","git_commit":"head","model_path":"/app/models/model.joblib"}
+=== POST /predict ===
+{"predictions":[1],"probabilities":[[0.3737844335560717,0.6262155664439282]],"model_run_id":"8ddbb08febcc4e62b4e7e85762681a45","dataset_version":"data-v2.0"}

@@ -2,14 +2,14 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install runtime dependencies
+# Install runtime dependencies (matching training sklearn version for joblib compatibility)
 RUN pip install --no-cache-dir \
-    fastapi==0.110.0 \
-    uvicorn==0.28.0 \
-    pydantic==2.6.4 \
-    scikit-learn==1.4.1.post1 \
-    pandas==2.2.1 \
-    joblib==1.3.2
+    fastapi \
+    uvicorn \
+    pydantic \
+    scikit-learn==1.9.1 \
+    pandas \
+    joblib
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && \

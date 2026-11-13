@@ -8,6 +8,6 @@ metadata:
 data:
   APP_VERSION: "1.0.0"
   MODEL_PATH: "/app/models/model.joblib"
-  MODEL_RUN_ID: "run-prod-007"
+  MODEL_RUN_ID: "8ddbb08febcc4e62b4e7e85762681a45"
   DATASET_VERSION: "data-v2.0"
   LOG_LEVEL: "INFO"
