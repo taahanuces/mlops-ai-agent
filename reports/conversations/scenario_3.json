@@ -1,0 +1,101 @@
+{
+  "scenario": {
+    "id": 3,
+    "title": "Scenario 3 \u2014 Authorized Pipeline Trigger with Confirmation Flow",
+    "prompt": "Trigger the model training pipeline and report whether it succeeded.",
+    "requires_confirm": true
+  },
+  "chat_response": {
+    "request_id": "4a4178ec-e52e-4869-82f2-910f5a5c4090",
+    "answer": {
+      "summary": "Target external systems were unavailable or returned errors. No operational metrics could be retrieved.",
+      "known_facts": [],
+      "uncertainties": [
+        "The training pipeline has not yet been triggered; therefore, its success or failure cannot be determined at this time.",
+        "Unverified claim (no valid tool evidence): The request to trigger the 'training_pipeline' DAG has been received and is pending user confirmation.",
+        "Tool 'airflow_trigger_training_dag' returned status 'pending_confirmation': Service down"
+      ],
+      "recommended_actions": [
+        "Confirm the trigger request using the provided confirmation ID to proceed with the training pipeline execution."
+      ],
+      "pending_confirmations": [
+        "conf-5b6cac88"
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "ev-0001",
+        "tool": "airflow_trigger_training_dag",
+        "source": "airflow",
+        "status": "pending_confirmation",
+        "data": {
+          "confirmation_id": "conf-5b6cac88",
+          "action": "Trigger Airflow DAG 'training_pipeline' with configuration {}",
+          "ttl_seconds": 300,
+          "instructions": "Call POST /confirm/conf-5b6cac88 to authorize triggering DAG training_pipeline."
+        },
+        "error": null,
+        "duration_ms": 0,
+        "request_id": "4a4178ec-e52e-4869-82f2-910f5a5c4090"
+      }
+    ],
+    "pending_actions": [
+      {
+        "confirmation_id": "conf-5b6cac88",
+        "tool_name": "airflow_trigger_training_dag",
+        "arguments": {
+          "dag_id": "training_pipeline",
+          "conf": {}
+        },
+        "description": "Trigger Airflow DAG 'training_pipeline' with configuration {}",
+        "created_at": 1794558365.216116,
+        "ttl_seconds": 300,
+        "source": "airflow"
+      }
+    ]
+  },
+  "confirmation_execution": {
+    "evidence_id": "ev-0002",
+    "tool": "airflow_trigger_training_dag",
+    "source": "airflow",
+    "status": "ok",
+    "data": {
+      "dag_run_id": "manual__2026-11-13T08:26:09.318376+00:00",
+      "dag_id": "training_pipeline",
+      "logical_date": null,
+      "queued_at": "2026-11-13T08:26:09.324962Z",
+      "start_date": null,
+      "end_date": null,
+      "duration": null,
+      "data_interval_start": null,
+      "data_interval_end": null,
+      "run_after": "2026-11-13T08:26:09.318376Z",
+      "last_scheduling_decision": null,
+      "run_type": "manual",
+      "state": "queued",
+      "triggered_by": "rest_api",
+      "triggering_user_name": "admin",
+      "conf": {},
+      "note": null,
+      "dag_versions": [
+        {
+          "id": "01a1d3de-0354-7d54-872b-f83b9c407bbf",
+          "version_number": 1,
+          "dag_id": "training_pipeline",
+          "bundle_name": "dags-folder",
+          "bundle_version": null,
+          "created_at": "2026-11-13T07:45:04.852130Z",
+          "dag_display_name": "training_pipeline",
+          "bundle_url": null
+        }
+      ],
+      "bundle_version": null,
+      "dag_display_name": "training_pipeline",
+      "partition_key": null,
+      "partition_date": null
+    },
+    "error": null,
+    "duration_ms": 89,
+    "request_id": "445c3335-fc4f-4124-be5a-76be4bfbc64c"
+  }
+}

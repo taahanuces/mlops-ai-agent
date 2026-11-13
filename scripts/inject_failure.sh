@@ -39,7 +39,8 @@ case "$SCENARIO" in
             if [ -f "data/dataset.csv" ]; then
                 cp data/dataset.csv data/dataset.csv.bak
                 # Drop target column or write invalid rows
-                python -c "import pandas as pd; df = pd.read_csv('data/dataset.csv'); df.drop(columns=['target']).to_csv('data/dataset.csv', index=False)"
+                PY=${PY:-.venv/bin/python}
+                $PY -c "import pandas as pd; df = pd.read_csv('data/dataset.csv'); df.drop(columns=['target']).to_csv('data/dataset.csv', index=False)"
                 echo "data/dataset.csv corrupted (missing 'target'). DVC status will report modified."
             else
                 echo "Error: data/dataset.csv not found."
@@ -50,7 +51,8 @@ case "$SCENARIO" in
             if [ -f "data/dataset.csv.bak" ]; then
                 mv data/dataset.csv.bak data/dataset.csv
             fi
-            dvc checkout data/dataset.csv.dvc || true
+            DVC=${DVC:-.venv/bin/dvc}
+            $DVC checkout data/dataset.csv.dvc || true
             echo "Fix applied. Working copy restored."
         fi
         ;;

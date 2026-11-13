@@ -381,7 +381,9 @@ def airflow_trigger_training_dag(
 
     def _execute():
         code, body = _airflow_request(
-            "POST", f"dags/{dag_id}/dagRuns", json_data={"conf": conf or {}}
+            "POST",
+            f"dags/{dag_id}/dagRuns",
+            json_data={"logical_date": None, "conf": conf or {}},
         )
         if code >= 400:
             raise RuntimeError(f"Airflow trigger returned status {code}: {body}")
