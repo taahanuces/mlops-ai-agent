@@ -63,7 +63,7 @@ Fill in your `GEMINI_API_KEY (Google AI Studio free tier)` in `.env` (note: test
 1. **MLflow Tracking Server:**
    ```bash
    make mlflow
-   # UI available at http://localhost:5000
+   # UI available at http://localhost:5001 (port 5001 used to avoid macOS AirPlay conflict on 5000)
    ```
 2. **Apache Airflow 3:**
    ```bash
@@ -155,5 +155,5 @@ Transcripts and raw tool evidence are saved in `reports/conversations/`.
   ```bash
   kind load docker-image mlops-inference:1.0.0 --name mlops
   ```
-- **Airflow reaching MLflow:** Containers reach host MLflow via `http://host.docker.internal:5000`.
+- **Airflow reaching MLflow:** Containers reach host MLflow via `http://host.docker.internal:5001`.
 - **DVC Local Remote:** Remote storage is configured outside the repository at `../dvc-remote`.

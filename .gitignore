@@ -35,3 +35,9 @@ data/*.csv
 # OS artifacts
 .DS_Store
 Thumbs.db
+
+# Assignment prompt & specification documents
+AGENTS.md
+PROJECT_SPEC.md
+*.pdf
+
