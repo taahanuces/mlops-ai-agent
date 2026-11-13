@@ -1,0 +1,185 @@
+Metadata-Version: 2.4
+Name: mlops-agent
+Version: 0.1.0
+Summary: Production-Ready MLOps AI Agent with DVC, MLflow, Airflow 3, and Kubernetes integrations
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.110.0
+Requires-Dist: uvicorn>=0.28.0
+Requires-Dist: pydantic>=2.6.0
+Requires-Dist: httpx>=0.27.0
+Requires-Dist: mlflow>=2.11.0
+Requires-Dist: dvc>=3.48.0
+Requires-Dist: kubernetes>=29.0.0
+Requires-Dist: anthropic>=0.19.0
+Requires-Dist: scikit-learn>=1.4.0
+Requires-Dist: pandas>=2.2.0
+Requires-Dist: joblib>=1.3.0
+Requires-Dist: pyyaml>=6.0.1
+Requires-Dist: python-dotenv>=1.0.1
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "dev"
+Requires-Dist: respx>=0.21.0; extra == "dev"
+Requires-Dist: ruff>=0.3.0; extra == "dev"
+
+# Production-Ready MLOps AI Agent
+
+An evidence-based conversational AI agent for autonomous MLOps platform operations across **DVC**, **MLflow**, **Apache Airflow 3**, and **Kubernetes**.
+
+Built for **MLOps & Production AI Engineering (Fall 2026)**.
+
+---
+
+## 1. Architecture & Design
+
+```
+User (HTTP / CLI)
+      │
+      ▼
+FastAPI Agent Service (:9000)
+      │
+      ▼
+Agent Orchestrator (Anthropic Tool Use / FakeLLM for CI)
+      │
+      ├── Permission Gate (Read immediate / Write confirmed / Forbidden blocked)
+      ├── Evidence Guard (No uncited facts, automatic failure logging)
+      └── Retraining Policy Guard (Prevents accidental retraining triggers)
+      │
+      ├── DVC ────────── Data tracking & Git tags (data-v1.0, data-v1.1, data-v2.0)
+      ├── MLflow ─────── Experiment tracking & Model Registry (sqlite:///mlflow.db)
+      ├── Airflow 3 ──── 5-stage training pipeline DAG with quality gate
+      └── Kubernetes ─── Deployment (2/2 Ready), ConfigMap, Probes, ClusterIP Service
+```
+
+---
+
+## 2. Prerequisites
+
+- macOS / Linux
+- Python 3.11
+- Docker Desktop (allocated 6–8 GB RAM)
+- `kind` (Kubernetes in Docker)
+- `kubectl`
+- Git & DVC
+
+---
+
+## 3. Quick Start
+
+### 3.1 Installation & Virtual Environment
+```bash
+# Clone and enter repo
+git clone <repo-url>
+cd mlop_a3
+
+# Run automated setup script
+make setup
+```
+
+### 3.2 Environment Configuration
+Copy the example configuration and adjust values as needed:
+```bash
+cp .env.example .env
+```
+Fill in your `ANTHROPIC_API_KEY` in `.env` (note: test suites and CI use mocked LLM clients and run without an API key).
+
+### 3.3 Starting Underlying Services
+1. **MLflow Tracking Server:**
+   ```bash
+   make mlflow
+   # UI available at http://localhost:5000
+   ```
+2. **Apache Airflow 3:**
+   ```bash
+   make airflow-up
+   # UI available at http://localhost:8080 (admin / admin)
+   ```
+3. **Kubernetes Cluster (`kind`):**
+   ```bash
+   # Build inference image, load into kind, and apply manifests
+   make build-deploy
+   ```
+4. **Seed Experiment Runs & Datasets:**
+   ```bash
+   make seed
+   # Creates 3 DVC dataset tags and 14 MLflow runs with full provenance
+   ```
+5. **Start Agent API:**
+   ```bash
+   make agent
+   # API running at http://localhost:9000
+   ```
+
+---
+
+## 4. Interacting with the Agent
+
+### Terminal CLI REPL
+```bash
+python -m agent.cli
+```
+
+### cURL Examples
+Submit a query:
+```bash
+curl -X POST http://localhost:9000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Which dataset version was used for experiment 7?"}'
+```
+
+Authorize a write action (confirmation flow):
+```bash
+curl -X POST http://localhost:9000/confirm/conf-1234abcd
+```
+
+---
+
+## 5. Testing & Code Quality
+
+```bash
+# Run complete unit & safety test suite with coverage
+make test
+
+# Run linter & code formatter checks
+make lint
+
+# Run formatters
+make format
+```
+
+---
+
+## 6. Demo Scenarios & Failure Injection
+
+### Run 5 Mandatory Scenarios
+```bash
+make demo
+```
+Transcripts and raw tool evidence are saved in `reports/conversations/`.
+
+### Injected Failures
+- **Scenario F1: Kubernetes Bad Config:**
+  ```bash
+  make break-k8s  # Injects bad MODEL_PATH into ConfigMap
+  # Ask the agent: "Why is my prediction API unavailable?"
+  make fix-k8s    # Restores ConfigMap and rolls deployment
+  ```
+- **Scenario F2: Data Corruption / Drift:**
+  ```bash
+  make break-data # Corrupts data/dataset.csv
+  # Ask the agent: "Check dataset status and explain errors."
+  make fix-data   # Restores dataset via DVC
+  ```
+
+---
+
+## 7. Troubleshooting
+
+- **Kind Docker image visibility:** Always load locally built images into the kind cluster:
+  ```bash
+  kind load docker-image mlops-inference:1.0.0 --name mlops
+  ```
+- **Airflow reaching MLflow:** Containers reach host MLflow via `http://host.docker.internal:5000`.
+- **DVC Local Remote:** Remote storage is configured outside the repository at `../dvc-remote`.

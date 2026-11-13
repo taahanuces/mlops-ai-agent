@@ -1,0 +1,9 @@
+stages:
+  validate:
+    cmd: python training/validate.py --data data/dataset.csv
+    deps:
+      - data/dataset.csv
+      - training/validate.py
+    outs:
+      - .cache/validation_report.json:
+          cache: false
