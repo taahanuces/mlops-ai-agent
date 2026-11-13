@@ -1,0 +1,11 @@
+=== DVC Reproducible Dataset Checkout Demonstration ===
+Target Revision: data-v1.0
+Target File: data/dataset.csv
+Checkout Directory: .cache/dataset_checkouts/data-v1.0
+Timestamp: Fri Nov 13 07:34:49 UTC 2026
+--------------------------------------------------------
+[Step 1] Running: dvc get . data/dataset.csv --rev data-v1.0 -o .cache/dataset_checkouts/data-v1.0/dataset.csv
+[Step 2] Materialized File MD5: 710117d5b28ee620492ec5823bf6edb6
+[Step 3] Git revision data-v1.0 recorded MD5: 710117d5b28ee620492ec5823bf6edb6
+--------------------------------------------------------
+SUCCESS: Checksums match perfectly! Verified reproducible dataset checkout.

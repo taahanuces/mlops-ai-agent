@@ -168,7 +168,11 @@ def train_and_log(
         mlflow.set_tags(tags)
 
         # Log sklearn model artifact
-        mlflow.sklearn.log_model(clf, "model")
+        mlflow.sklearn.log_model(
+            clf,
+            name="model",
+            skops_trusted_types=["sklearn.tree._tree.Tree"],
+        )
 
         # Save metrics artifact
         metrics_file = REPO_ROOT / ".cache" / f"metrics_{run_id}.json"

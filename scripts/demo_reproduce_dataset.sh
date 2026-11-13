@@ -29,7 +29,7 @@ fi
 echo "[Step 2] Materialized File MD5: ${ACTUAL_MD5}" | tee -a "$REPORT_FILE"
 
 # 3. Read expected MD5 from git revision .dvc file
-EXPECTED_MD5=$(git show "${TARGET_REV}:${DATA_FILE}.dvc" | grep -A 2 "outs:" | grep "md5:" | awk '{print $2}')
+EXPECTED_MD5=$(git show "${TARGET_REV}:${DATA_FILE}.dvc" | grep -A 2 "outs:" | grep "md5:" | awk '{print $NF}')
 echo "[Step 3] Git revision ${TARGET_REV} recorded MD5: ${EXPECTED_MD5}" | tee -a "$REPORT_FILE"
 
 # 4. Compare
