@@ -52,6 +52,15 @@ default_args = {
 }
 
 
+def _resolve_min_f1(context: dict[str, Any]) -> float:
+    """MIN_F1 from trigger conf (dag_run.conf['min_f1']) falling back to env, then 0.85."""
+    dag_run = context.get("dag_run")
+    conf = getattr(dag_run, "conf", None) or {}
+    if "min_f1" in conf:
+        return float(conf["min_f1"])
+    return float(os.getenv("MIN_F1", "0.85"))
+
+
 def task_validate_dataset(**context: Any) -> dict[str, Any]:
     """Validate data schema and quality. Fails immediately without retries if corrupted."""
     from training.validate import validate_dataset
@@ -90,7 +99,7 @@ def task_evaluate_and_log(**context: Any) -> dict[str, Any]:
     if "dag_run" in context and hasattr(context["dag_run"], "run_id"):
         dag_run_id = context["dag_run"].run_id
 
-    min_f1 = float(os.getenv("MIN_F1", "0.85"))
+    min_f1 = _resolve_min_f1(context)
     data_path = os.getenv("DATASET_PATH", "data/dataset.csv")
 
     res = train_and_log(
@@ -116,7 +125,7 @@ def task_quality_gate(**context: Any) -> str:
 
     metrics = eval_result.get("metrics", {})
     f1 = metrics.get("f1", 0.0)
-    min_f1 = float(os.getenv("MIN_F1", "0.85"))
+    min_f1 = _resolve_min_f1(context)
     run_id = eval_result.get("run_id")
 
     logger.info(f"Evaluating Quality Gate: F1={f1} vs required MIN_F1={min_f1}")

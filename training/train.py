@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -48,7 +49,7 @@ def get_git_tag() -> str:
             return res.stdout.strip()
     except Exception:
         pass
-    return "data-v1.0"
+    return "unknown"
 
 
 def get_dvc_provenance(dataset_file: Path) -> tuple[str, bool]:
@@ -125,7 +126,7 @@ def train_and_log(
 
     # Step 6: Provenance tags
     git_commit = get_git_commit()
-    tag_ver = dataset_version or get_git_tag()
+    tag_ver = dataset_version or os.getenv("DATASET_VERSION") or get_git_tag()
     dvc_md5, dvc_dirty = get_dvc_provenance(dataset_file)
 
     # MLflow tracking

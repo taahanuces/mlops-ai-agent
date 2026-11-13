@@ -1,0 +1,79 @@
+{
+  "dag_run": {
+    "dag_run_id": "manual__2026-11-13T07:52:33.258077+00:00",
+    "dag_id": "training_pipeline",
+    "logical_date": null,
+    "queued_at": "2026-11-13T07:52:33.298379Z",
+    "start_date": "2026-11-13T07:52:33.792735Z",
+    "end_date": "2026-11-13T07:52:47.101198Z",
+    "duration": 13.308463,
+    "data_interval_start": null,
+    "data_interval_end": null,
+    "run_after": "2026-11-13T07:52:33.258077Z",
+    "last_scheduling_decision": "2026-11-13T07:52:47.098943Z",
+    "run_type": "manual",
+    "state": "success",
+    "triggered_by": "rest_api",
+    "triggering_user_name": "admin",
+    "conf": {},
+    "note": null,
+    "dag_versions": [
+      {
+        "id": "01a1d3de-0354-7d54-872b-f83b9c407bbf",
+        "version_number": 1,
+        "dag_id": "training_pipeline",
+        "bundle_name": "dags-folder",
+        "bundle_version": null,
+        "created_at": "2026-11-13T07:45:04.852130Z",
+        "dag_display_name": "training_pipeline",
+        "bundle_url": null
+      }
+    ],
+    "bundle_version": null,
+    "dag_display_name": "training_pipeline",
+    "partition_key": null,
+    "partition_date": null
+  },
+  "task_instances": [
+    {
+      "task_id": "validate_dataset",
+      "state": "success",
+      "try_number": 1,
+      "start_date": "2026-11-13T07:52:33.905840Z",
+      "end_date": "2026-11-13T07:52:36.193107Z",
+      "duration": 2.287267
+    },
+    {
+      "task_id": "preprocess_data",
+      "state": "success",
+      "try_number": 1,
+      "start_date": "2026-11-13T07:52:36.990516Z",
+      "end_date": "2026-11-13T07:52:38.249626Z",
+      "duration": 1.25911
+    },
+    {
+      "task_id": "train_model",
+      "state": "success",
+      "try_number": 1,
+      "start_date": "2026-11-13T07:52:38.849500Z",
+      "end_date": "2026-11-13T07:52:38.883929Z",
+      "duration": 0.034429
+    },
+    {
+      "task_id": "evaluate_and_log",
+      "state": "success",
+      "try_number": 1,
+      "start_date": "2026-11-13T07:52:39.957845Z",
+      "end_date": "2026-11-13T07:52:45.168826Z",
+      "duration": 5.210981
+    },
+    {
+      "task_id": "quality_gate",
+      "state": "success",
+      "try_number": 1,
+      "start_date": "2026-11-13T07:52:46.106779Z",
+      "end_date": "2026-11-13T07:52:46.714476Z",
+      "duration": 0.607697
+    }
+  ]
+}
