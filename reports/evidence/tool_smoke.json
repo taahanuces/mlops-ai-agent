@@ -1,0 +1,214 @@
+{
+  "tools_registered": 26,
+  "results": {
+    "airflow_list_dags": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0003",
+      "duration_ms": 91,
+      "error": null
+    },
+    "airflow_get_dag_runs": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0004",
+      "duration_ms": 18,
+      "error": null
+    },
+    "airflow_get_failed_tasks": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0005",
+      "duration_ms": 40,
+      "error": null
+    },
+    "airflow_get_task_logs": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0006",
+      "duration_ms": 14,
+      "error": null
+    },
+    "airflow_trigger_training_dag": {
+      "status": "pending_confirmation",
+      "expected": "pending_confirmation",
+      "pass": true,
+      "evidence_id": "ev-0007",
+      "duration_ms": 0,
+      "error": null
+    },
+    "dvc_list_tracked_datasets": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0008",
+      "duration_ms": 166,
+      "error": null
+    },
+    "dvc_get_dataset_version": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0009",
+      "duration_ms": 29,
+      "error": null
+    },
+    "dvc_compare_versions": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0010",
+      "duration_ms": 395,
+      "error": null
+    },
+    "dvc_check_data_changed": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0011",
+      "duration_ms": 253,
+      "error": null
+    },
+    "dvc_get_reproduction_steps": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0012",
+      "duration_ms": 6,
+      "error": null
+    },
+    "dvc_materialize_dataset_version": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0013",
+      "duration_ms": 342,
+      "error": null
+    },
+    "dvc_get_dataset_for_run": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0014",
+      "duration_ms": 6,
+      "error": null
+    },
+    "k8s_list_pods": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0015",
+      "duration_ms": 12,
+      "error": null
+    },
+    "k8s_list_deployments": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0016",
+      "duration_ms": 8,
+      "error": null
+    },
+    "k8s_get_pod_logs": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0017",
+      "duration_ms": 10,
+      "error": null
+    },
+    "k8s_get_services": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0018",
+      "duration_ms": 9,
+      "error": null
+    },
+    "k8s_find_unhealthy_pods": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0019",
+      "duration_ms": 11,
+      "error": null
+    },
+    "k8s_get_deployed_version": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0020",
+      "duration_ms": 12,
+      "error": null
+    },
+    "k8s_restart_deployment": {
+      "status": "pending_confirmation",
+      "expected": "pending_confirmation",
+      "pass": true,
+      "evidence_id": "ev-0021",
+      "duration_ms": 0,
+      "error": null
+    },
+    "k8s_scale_deployment": {
+      "status": "pending_confirmation",
+      "expected": "pending_confirmation",
+      "pass": true,
+      "evidence_id": "ev-0022",
+      "duration_ms": 0,
+      "error": null
+    },
+    "mlflow_list_experiments": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0023",
+      "duration_ms": 4,
+      "error": null
+    },
+    "mlflow_list_runs": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0024",
+      "duration_ms": 10,
+      "error": null
+    },
+    "mlflow_get_run_details": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0025",
+      "duration_ms": 10,
+      "error": null
+    },
+    "mlflow_find_best_run": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0026",
+      "duration_ms": 12,
+      "error": null
+    },
+    "mlflow_compare_runs": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0027",
+      "duration_ms": 8,
+      "error": null
+    },
+    "mlflow_get_model_versions": {
+      "status": "ok",
+      "expected": "ok",
+      "pass": true,
+      "evidence_id": "ev-0028",
+      "duration_ms": 9,
+      "error": null
+    }
+  },
+  "all_pass": true
+}

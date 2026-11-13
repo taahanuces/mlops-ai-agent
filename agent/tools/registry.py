@@ -167,20 +167,106 @@ def get_all_tool_specs() -> list[ToolSpec]:
     return [spec for _, _, spec in TOOL_REGISTRY.values()]
 
 
+def run_smoke() -> dict[str, Any]:
+    """Run every registered tool once against the real systems (writes only stage confirmation)."""
+    import json
+    from pathlib import Path
+
+    # Use the canonical module so decorators and this runner share one registry
+    import agent.tools.airflow_tools  # noqa: F401
+    import agent.tools.dvc_tools  # noqa: F401
+    import agent.tools.kubernetes_tools  # noqa: F401
+    import agent.tools.mlflow_tools  # noqa: F401
+    from agent.tools import registry as reg
+
+    champion = Path("reports/evidence/champion_run_id.txt").read_text().strip()
+    af_run = json.loads(Path("reports/evidence/airflow_failed_gate_run.json").read_text())[
+        "dag_run"
+    ]["dag_run_id"]
+
+    runs = reg.run_tool("mlflow_list_runs", {"limit": 5})
+    run_rows = (runs.data or {}).get("runs", []) if isinstance(runs.data, dict) else []
+    others = [r.get("run_id") for r in run_rows if r.get("run_id") and r.get("run_id") != champion]
+    runner_up = others[0] if others else champion
+
+    pod_res = reg.run_tool("k8s_list_pods", {})
+    pods = (pod_res.data or {}).get("pods", []) if isinstance(pod_res.data, dict) else []
+    pod_name = pods[0].get("name", "unknown") if pods else "unknown"
+
+    cases: dict[str, dict[str, Any]] = {
+        "airflow_list_dags": {},
+        "airflow_get_dag_runs": {"dag_id": "training_pipeline", "limit": 5},
+        "airflow_get_failed_tasks": {"dag_run_id": af_run},
+        "airflow_get_task_logs": {"dag_run_id": af_run, "task_id": "quality_gate"},
+        "airflow_trigger_training_dag": {"dag_id": "training_pipeline"},
+        "dvc_list_tracked_datasets": {},
+        "dvc_get_dataset_version": {},
+        "dvc_compare_versions": {"rev_a": "data-v1.0", "rev_b": "data-v2.0"},
+        "dvc_check_data_changed": {},
+        "dvc_get_reproduction_steps": {"rev": "data-v1.0"},
+        "dvc_materialize_dataset_version": {"rev": "data-v1.0"},
+        "dvc_get_dataset_for_run": {"run_id": champion},
+        "k8s_list_pods": {},
+        "k8s_list_deployments": {},
+        "k8s_get_pod_logs": {"pod_name": pod_name, "tail_lines": 20},
+        "k8s_get_services": {},
+        "k8s_find_unhealthy_pods": {},
+        "k8s_get_deployed_version": {},
+        "k8s_restart_deployment": {},
+        "k8s_scale_deployment": {"replicas": 2},
+        "mlflow_list_experiments": {},
+        "mlflow_list_runs": {"limit": 5},
+        "mlflow_get_run_details": {"run_id": champion},
+        "mlflow_find_best_run": {"metric": "f1", "mode": "max", "limit": 3},
+        "mlflow_compare_runs": {"run_ids": [champion, runner_up]},
+        "mlflow_get_model_versions": {},
+    }
+    out: dict[str, Any] = {"tools_registered": len(reg.TOOL_REGISTRY), "results": {}}
+    for name, args in cases.items():
+        r = reg.run_tool(name, args)
+        expected = (
+            "pending_confirmation" if reg.TOOL_REGISTRY[name][2].permission == "write" else "ok"
+        )
+        out["results"][name] = {
+            "status": r.status,
+            "expected": expected,
+            "pass": r.status == expected,
+            "evidence_id": r.evidence_id,
+            "duration_ms": r.duration_ms,
+            "error": r.error,
+        }
+    out["all_pass"] = all(v["pass"] for v in out["results"].values()) and len(cases) == len(
+        reg.TOOL_REGISTRY
+    )
+    return out
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Tool registry inspector & smoke test")
     parser.add_argument("--smoke", action="store_true", help="Run smoke tests on registered tools")
+    parser.add_argument("--out", default=None, help="Write smoke JSON to this file")
     args = parser.parse_args()
 
-    # Import tool modules to populate registry
-    try:
-        import agent.tools.airflow_tools  # noqa: F401
-        import agent.tools.dvc_tools  # noqa: F401
-        import agent.tools.kubernetes_tools  # noqa: F401
-        import agent.tools.mlflow_tools  # noqa: F401
-    except Exception as e:
-        print(f"Error importing tools: {e}", file=sys.stderr)
+    if args.smoke:
+        import json
 
-    print(f"Total tools registered: {len(TOOL_REGISTRY)}")
-    for name, (_, _, spec) in TOOL_REGISTRY.items():
+        # Re-enter via canonical module name to avoid a duplicate __main__ registry
+        from agent.tools.registry import run_smoke as _run_smoke
+
+        result = _run_smoke()
+        payload = json.dumps(result, indent=2, default=str)
+        if args.out:
+            with open(args.out, "w") as fh:
+                fh.write(payload + "\n")
+        print(payload)
+        sys.exit(0 if result["all_pass"] else 1)
+
+    import agent.tools.airflow_tools  # noqa: F401
+    import agent.tools.dvc_tools  # noqa: F401
+    import agent.tools.kubernetes_tools  # noqa: F401
+    import agent.tools.mlflow_tools  # noqa: F401
+    from agent.tools import registry as _reg
+
+    print(f"Total tools registered: {len(_reg.TOOL_REGISTRY)}")
+    for name, (_, _, spec) in _reg.TOOL_REGISTRY.items():
         print(f" - {name} [{spec.permission}]: {spec.description}")

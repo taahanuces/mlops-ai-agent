@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any, Optional
 
@@ -16,13 +18,22 @@ from agent.schemas import ToolResult
 from agent.tools.registry import register_tool
 
 
+def _resolve_binary(name: str) -> str:
+    """Resolve a CLI binary: prefer the running interpreter's bin dir (venv), then PATH."""
+    sibling = Path(sys.executable).parent / name
+    if sibling.exists():
+        return str(sibling)
+    return shutil.which(name) or name
+
+
 def _execute_safe_command(argv: list[str], timeout_s: int = TOOL_TIMEOUT_S) -> tuple[int, str, str]:
     """Execute allow-listed command with subprocess list argv, shell=False, and timeout."""
     if not check_dvc_command_allowed(argv):
         raise PermissionError(f"Command not permitted by DVC allow-list: {' '.join(argv)}")
 
+    resolved = [_resolve_binary(argv[0]), *argv[1:]] if argv[0] in ("dvc", "git") else argv
     res = subprocess.run(
-        argv,
+        resolved,
         cwd=str(REPO_ROOT),
         capture_output=True,
         text=True,
@@ -397,6 +408,7 @@ def dvc_materialize_dataset_version(
             rev,
             "-o",
             f".cache/dataset_checkouts/{rev}/{Path(dataset_path).name}",
+            "--force",
         ]
         code, stdout, stderr = _execute_safe_command(cmd)
         if code != 0 or not out_file.exists():

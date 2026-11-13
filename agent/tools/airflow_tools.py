@@ -44,7 +44,7 @@ def _get_auth_token() -> str | None:
                     f"{AIRFLOW_BASE_URL.rstrip('/')}/api/v2/auth/token",
                     json={"username": AIRFLOW_USERNAME, "password": AIRFLOW_PASSWORD},
                 )
-            if resp.status_code == 200:
+            if resp.status_code in (200, 201):
                 data = resp.json()
                 token = data.get("access_token") or data.get("token")
                 expires_in = data.get("expires_in", 3600)
@@ -312,7 +312,20 @@ def airflow_get_task_logs(
                 error=f"Airflow returned status {status_code}: {body}",
             )
 
-        log_content = body if isinstance(body, str) else body.get("content", str(body))
+        raw = body if isinstance(body, str) else body.get("content", str(body))
+        if isinstance(raw, list):
+            # Airflow 3 returns structured log entries (dicts with timestamp/event/level) or strings
+            parts = []
+            for entry in raw:
+                if isinstance(entry, dict):
+                    ts = entry.get("timestamp", "")
+                    lvl = entry.get("level", "")
+                    parts.append(f"{ts} [{lvl}] {entry.get('event', '')}".strip())
+                else:
+                    parts.append(str(entry))
+            log_content = "\n".join(parts)
+        else:
+            log_content = str(raw)
         lines = log_content.splitlines()
         truncated = "\n".join(lines[-tail_lines:]) if len(lines) > tail_lines else log_content
 
